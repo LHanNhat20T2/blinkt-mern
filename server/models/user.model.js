@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema(
         },
         last_login_date: {
             type: Date,
-            default: "",
+            default: null,
         },
         status: {
             type: String,
@@ -64,7 +64,7 @@ const userSchema = new mongoose.Schema(
         },
         forgot_password_expiry: {
             type: Date,
-            default: "",
+            default: null,
         },
         role: {
             type: String,
