@@ -3,8 +3,12 @@ import sendEmail from "../config/sendEmail.js";
 import generatedAccessToken from "../utils/generatedAccessToken.js";
 import generatedRefreshToken from "../utils/generatedRefreshToken.js";
 import verifyEmailTemplate from "../utils/verifyEmailTemplate.js";
+import generatedOtp from "../utils/generatedOtp.js";
+import uploadImageCloudinary from "../utils/uploadImageCloudinary.js";
 import bcryptjs from "bcryptjs";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import forgotPasswordTemplate from "../utils/forgotPasswordTemplate.js";
 dotenv.config();
 export async function registerUserController(req, res) {
     try {
@@ -140,7 +144,7 @@ export async function loginController(req, res) {
 
         const cookiesOption = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
+            // secure: true,
             sameSite: "None",
         };
         res.cookie("accessToken", accessToken, cookiesOption);
@@ -166,18 +170,290 @@ export async function loginController(req, res) {
 
 export async function logoutController(req, res) {
     try {
+        const userId = req.userId; // middleware
+
         const cookiesOption = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
+            // secure: true,
             sameSite: "None",
         };
         res.clearCookie("accessToken", cookiesOption);
         res.clearCookie("refreshToken", cookiesOption);
 
+        const removeRefreshToken = await UserModel.findByIdAndUpdate(userId, {
+            refresh_token: "", // Xóa refresh_token trong cơ sở dữ liệu
+        });
+
         return res.json({
             message: "Logout successfully",
             error: false,
             success: true,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false,
+        });
+    }
+}
+
+//upload user avatar
+export async function uploadAvatar(req, res) {
+    try {
+        const userId = req.userId; // auth middleware
+        const image = req.file; //multer middleware
+        const upload = await uploadImageCloudinary(image);
+
+        const updateUser = await UserModel.findByIdAndUpdate(userId, {
+            avatar: upload.url,
+        });
+        return res.json({
+            message: "upload profile",
+            data: {
+                _id: userId,
+                avatar: upload.url,
+            },
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false,
+        });
+    }
+}
+
+export async function updateDetails(req, res) {
+    try {
+        const userId = req.userId;
+        const { name, email, mobile, password } = req.body;
+
+        let hashPassword = "";
+        if (password) {
+            const salt = await bcryptjs.genSalt(10);
+            hashPassword = await bcryptjs.hash(password, salt);
+        }
+        const updateUser = await UserModel.findByIdAndUpdate(
+            userId,
+            {
+                ...(name ? { name } : {}),
+                ...(email ? { email } : {}),
+                ...(mobile ? { mobile } : {}),
+                ...(password ? { password: hashPassword } : {}),
+            },
+            { new: true }
+        );
+
+        return res.json({
+            message: "update user successfully",
+            error: false,
+            success: true,
+            data: updateUser,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false,
+        });
+    }
+}
+
+//forgot password
+export async function forgotPasswordController(req, res) {
+    try {
+        const { email } = req.body;
+
+        const user = await UserModel.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({
+                message: "Email  not available",
+                error: true,
+                success: false,
+            });
+        }
+
+        const otp = generatedOtp();
+        const expireTime = new Date() + 60 * 60 * 1000; // 1hr
+
+        const update = await UserModel.findByIdAndUpdate(user._id, {
+            forgot_password_otp: otp,
+            forgot_password_expiry: new Date(expireTime).toISOString(),
+        });
+
+        await sendEmail({
+            sendTo: email,
+            subject: "Forgot password from Binkeyit",
+            html: forgotPasswordTemplate({
+                name: user.name,
+                otp: otp,
+            }),
+        });
+        return res.json({
+            message: "check your mail",
+            error: false,
+            success: true,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false,
+        });
+    }
+}
+
+//verify forgot password otp
+export async function verifyForgotPasswordOtp(req, res) {
+    try {
+        const { email, otp } = req.body;
+
+        const user = await UserModel.findOne({ email });
+
+        if (!email || !otp) {
+            return res.status(400).json({
+                message: "Provide required field email or password",
+                error: true,
+                success: false,
+            });
+        }
+        if (!user) {
+            return res.status(400).json({
+                message: "Email  not available",
+                error: true,
+                success: false,
+            });
+        }
+
+        const currentTime = new Date().toISOString;
+        if (user.forgot_password_expiry < currentTime)
+            return res.status(400).json({
+                message: "Otp is expired",
+                error: true,
+                success: false,
+            });
+
+        if (otp !== user.forgot_password_otp) {
+            return res.status(400).json({
+                message: "Invalid otp",
+                error: true,
+                success: false,
+            });
+        }
+
+        //if otp is not expired
+        // otp === user.forgot_password_otp
+
+        return res.json({
+            message: "Verify otp success",
+            error: false,
+            success: true,
+        });
+    } catch (error) {
+        return res.status.json({
+            message: error.message || error,
+            error: true,
+            success: false,
+        });
+    }
+}
+
+//reset password
+
+export async function resetPassword(req, res) {
+    try {
+        const { email, newPassword, confirmPassword } = req.body;
+        if (!email || !newPassword || !confirmPassword) {
+            return res.status(400).json({
+                message:
+                    "Provide required fields email, newPassword, confirmPassword",
+            });
+        }
+
+        const user = await UserModel.findOne({ email });
+        if (!user) {
+            return res.status(400).json({
+                message: "Email is not available",
+                error: true,
+                success: false,
+            });
+        }
+
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({
+                message: "newPassword and confirmPassword not be same",
+                error: true,
+                success: false,
+            });
+        }
+
+        const salt = await bcryptjs.genSalt(10);
+        const hashPassword = await bcryptjs.hash(newPassword, salt);
+
+        const update = await UserModel.findOneAndUpdate(user._id, {
+            password: hashPassword,
+        });
+
+        return res.json({
+            message: "Password update successfully",
+            error: false,
+            success: true,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false,
+        });
+    }
+}
+
+// refresh token
+export async function refreshToken(req, res) {
+    try {
+        const refreshToken =
+            req.cookies.refreshToken ||
+            req?.headers?.authorization?.split("")[1]; /// ["Bearer"  "token"]
+        if (!refreshToken) {
+            return res.status(401).json({
+                message: "Invalid token",
+                error: true,
+                success: false,
+            });
+        }
+
+        const verifyToken = await jwt.verify(
+            refreshToken,
+            process.env.SECRET_KEY_REFRESH_TOKEN
+        );
+        if (!verifyToken) {
+            return res.status(401).json({
+                message: "token is expired",
+                error: true,
+                success: false,
+            });
+        }
+
+        const userId = verifyToken._id;
+
+        const newAccessToken = await generatedAccessToken(userId);
+
+        const cookiesOption = {
+            httpOnly: true,
+            // secure: true,
+            sameSite: "None",
+        };
+        res.cookie("accessToken", newAccessToken, cookiesOption);
+
+        return res.json({
+            message: "New Access token generated",
+            error: false,
+            success: true,
+            data: {
+                accessToken: newAccessToken,
+            },
         });
     } catch (error) {
         return res.status(500).json({
