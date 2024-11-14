@@ -144,7 +144,7 @@ export async function loginController(req, res) {
 
         const cookiesOption = {
             httpOnly: true,
-            // secure: true,
+            secure: true,
             sameSite: "None",
         };
         res.cookie("accessToken", accessToken, cookiesOption);
@@ -174,7 +174,7 @@ export async function logoutController(req, res) {
 
         const cookiesOption = {
             httpOnly: true,
-            // secure: true,
+            secure: true,
             sameSite: "None",
         };
         res.clearCookie("accessToken", cookiesOption);
@@ -310,31 +310,41 @@ export async function verifyForgotPasswordOtp(req, res) {
     try {
         const { email, otp } = req.body;
 
-        const user = await UserModel.findOne({ email });
-
-        if (!email || !otp) {
+        // Kiểm tra xem các trường bắt buộc đã được cung cấp chưa
+        if (
+            !email ||
+            !otp ||
+            typeof email !== "string" ||
+            typeof otp !== "string"
+        ) {
             return res.status(400).json({
-                message: "Provide required field email or password",
+                message: "Provide required fields: email and otp",
                 error: true,
                 success: false,
             });
         }
+
+        // Tìm người dùng với email đã cho
+        const user = await UserModel.findOne({ email });
         if (!user) {
             return res.status(400).json({
-                message: "Email  not available",
+                message: "Email not available",
                 error: true,
                 success: false,
             });
         }
 
-        const currentTime = new Date().toISOString;
-        if (user.forgot_password_expiry < currentTime)
+        // Kiểm tra xem OTP có hết hạn không
+        const currentTime = new Date().toISOString();
+        if (user.forgot_password_expiry < currentTime) {
             return res.status(400).json({
                 message: "Otp is expired",
                 error: true,
                 success: false,
             });
+        }
 
+        // Kiểm tra OTP có chính xác không
         if (otp !== user.forgot_password_otp) {
             return res.status(400).json({
                 message: "Invalid otp",
@@ -343,16 +353,14 @@ export async function verifyForgotPasswordOtp(req, res) {
             });
         }
 
-        //if otp is not expired
-        // otp === user.forgot_password_otp
-
+        // OTP hợp lệ và chưa hết hạn
         return res.json({
             message: "Verify otp success",
             error: false,
             success: true,
         });
     } catch (error) {
-        return res.status.json({
+        return res.status(500).json({
             message: error.message || error,
             error: true,
             success: false,
@@ -442,7 +450,7 @@ export async function refreshToken(req, res) {
 
         const cookiesOption = {
             httpOnly: true,
-            // secure: true,
+            secure: true,
             sameSite: "None",
         };
         res.cookie("accessToken", newAccessToken, cookiesOption);

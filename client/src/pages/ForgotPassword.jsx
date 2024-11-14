@@ -1,18 +1,14 @@
 import { useState } from "react";
-import { FiEyeOff } from "react-icons/fi";
-import { LuEye } from "react-icons/lu";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Axios from "../utils/Axios";
 import SummaryApi from "../commom/SummaryApi";
 import AxiosToastError from "../utils/AxiostToastError.js";
 
-const Login = () => {
+const ForgotPassword = () => {
     const [data, setData] = useState({
         email: "",
-        password: "",
     });
-    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -32,7 +28,7 @@ const Login = () => {
 
         try {
             const res = await Axios({
-                ...SummaryApi.login,
+                ...SummaryApi.forgot_password,
                 data: data,
             });
 
@@ -42,16 +38,13 @@ const Login = () => {
 
             if (res.data.success) {
                 toast.success(res.data.message);
-                localStorage.setItem("accessToken", res.data.data.accessToken);
-                localStorage.setItem(
-                    "refreshToken",
-                    res.data.data.refreshToken
-                );
+
+                navigate("/verification-otp", {
+                    state: data,
+                });
                 setData({
                     email: "",
-                    password: "",
                 });
-                navigate("/");
             }
 
             console.log("res", res);
@@ -62,12 +55,13 @@ const Login = () => {
     return (
         <section className="container w-full px-2 mx-auto ">
             <div className="w-full max-w-lg p-5 mx-auto my-2 bg-white rounded">
+                <p className="text-lg font-semibold">Forgot Password</p>
                 <form
                     action=""
                     onSubmit={handleSubmit}
                     className="grid gap-4 py-4 "
                 >
-                    <div className="grid gap-2 mt-6">
+                    <div className="grid gap-2">
                         <label htmlFor="email">Email : </label>
                         <input
                             type="text"
@@ -80,37 +74,6 @@ const Login = () => {
                             placeholder="Enter your email"
                         />
                     </div>
-                    <div className="grid gap-2 mt-6">
-                        <label htmlFor="password">Password : </label>
-                        <div className="flex items-center p-2 border rounded bg-blue-50 focus-within:border-primary-200">
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                id="password"
-                                autoFocus
-                                name="password"
-                                className="w-full mr-1 outline-none"
-                                value={data.password}
-                                onChange={handleChange}
-                                placeholder="Enter your password"
-                            />
-                            <div
-                                onClick={() => setShowPassword((pre) => !pre)}
-                                className="cursor-pointer"
-                            >
-                                {showPassword ? (
-                                    <LuEye size={22} />
-                                ) : (
-                                    <FiEyeOff size={22} />
-                                )}
-                            </div>
-                        </div>
-                        <Link
-                            to={"/forgot-password"}
-                            className="block ml-auto hover:text-primary-200"
-                        >
-                            Forgot Password
-                        </Link>
-                    </div>
                     <button
                         disabled={!valideValue}
                         className={`${
@@ -119,21 +82,21 @@ const Login = () => {
                                 : "bg-gray-500"
                         }  py-2 my-3 font-semibold tracking-wide text-white rounded`}
                     >
-                        Login
+                        Send Otp
                     </button>
                 </form>
 
                 <p className="text-right">
-                    Don&apos;t have account ?
+                    Already have account ?
                     <Link
-                        to={"/register"}
+                        to={"/login"}
                         className="font-semibold text-green-700 hover:text-green-800"
                     >
-                        Register
+                        Login
                     </Link>
                 </p>
             </div>
         </section>
     );
 };
-export default Login;
+export default ForgotPassword;
