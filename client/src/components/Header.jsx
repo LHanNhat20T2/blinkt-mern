@@ -4,11 +4,19 @@ import useMobile from "../hooks/useMobile";
 import Search from "../components/Search";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { BsCart4 } from "react-icons/bs";
+import { useSelector } from "react-redux";
+import { FaCaretDown, FaCaretUp } from "react-icons/fa";
+import { useState } from "react";
+import UserMenu from "./UserMenu";
 const Header = () => {
     const [isMobile] = useMobile();
     const location = useLocation();
     const isSearchPage = location.pathname === "/search";
     const navigate = useNavigate();
+    const user = useSelector((state) => state?.user);
+    const [openUserMenu, setOpenUserMenu] = useState(false);
+
+    console.log("user store", user);
 
     const redirectToLoginPage = () => {
         navigate("/login");
@@ -52,12 +60,38 @@ const Header = () => {
                             <FaRegCircleUser />
                         </button>
                         <div className="items-center hidden gap-10 lg:flex">
-                            <button
-                                onClick={redirectToLoginPage}
-                                className="px-2 text-lg"
-                            >
-                                Login
-                            </button>
+                            {user?._id ? (
+                                <div className="relative">
+                                    <div
+                                        onClick={() =>
+                                            setOpenUserMenu((preve) => !preve)
+                                        }
+                                        className="flex items-center gap-1 cursor-pointer select-none"
+                                    >
+                                        <p>Account</p>
+                                        {openUserMenu ? (
+                                            <FaCaretUp size={25} />
+                                        ) : (
+                                            <FaCaretDown size={25} />
+                                        )}
+                                    </div>
+                                    {openUserMenu && (
+                                        <div className="absolute right-0 top-12">
+                                            <div className="p-4 bg-white rounded lg:shadow-lg min-w-52">
+                                                <UserMenu />
+                                            </div>
+                                        </div>
+                                    )}
+                                    {/* <-- Added closing div here */}
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={redirectToLoginPage}
+                                    className="px-2 text-lg"
+                                >
+                                    Login
+                                </button>
+                            )}
                             <button className="flex items-center gap-2 px-3 py-3 text-white bg-green-800 rounded hover:bg-green-700">
                                 {/* add cart icons */}
                                 <div className="animate-bounce">

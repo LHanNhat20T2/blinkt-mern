@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Axios from "../utils/Axios";
 import SummaryApi from "../commom/SummaryApi";
-import AxiosToastError from "../utils/AxiostToastError.js";
+import AxiosToastError from "../utils/AxiosToastError.js";
 
 const ForgotPassword = () => {
     const [data, setData] = useState({

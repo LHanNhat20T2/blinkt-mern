@@ -142,6 +142,10 @@ export async function loginController(req, res) {
         const accessToken = await generatedAccessToken(user._id);
         const refreshToken = await generatedRefreshToken(user._id);
 
+        const updateUser = await UserModel.findByIdAndUpdate(user._id, {
+            last_login_date: new Date(),
+        });
+
         const cookiesOption = {
             httpOnly: true,
             secure: true,
@@ -354,6 +358,11 @@ export async function verifyForgotPasswordOtp(req, res) {
         }
 
         // OTP hợp lệ và chưa hết hạn
+        const updateUser = await UserModel.findByIdAndUpdate(user?._id, {
+            forgot_password_otp: "",
+            forgot_password_expiry: "",
+        });
+
         return res.json({
             message: "Verify otp success",
             error: false,
@@ -466,6 +475,29 @@ export async function refreshToken(req, res) {
     } catch (error) {
         return res.status(500).json({
             message: error.message || error,
+            error: true,
+            success: false,
+        });
+    }
+}
+
+//get login details
+export async function userDetails(req, res) {
+    try {
+        const userId = req.userId;
+
+        const user = await UserModel.findById(userId).select(
+            "-password -refresh_token"
+        );
+        return res.json({
+            message: "user details",
+            data: user,
+            error: false,
+            success: true,
+        });
+    } catch (error) {
+        return res.status(400).json({
+            message: "Something is wrong",
             error: true,
             success: false,
         });

@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Axios from "../utils/Axios";
 import SummaryApi from "../commom/SummaryApi";
 import toast from "react-hot-toast";
-import AxiosToastError from "../utils/AxiostToastError";
+import AxiosToastError from "../utils/AxiosToastError";
 import { FiEyeOff } from "react-icons/fi";
 import { LuEye } from "react-icons/lu";
 const ResetPassword = () => {
