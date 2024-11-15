@@ -16,8 +16,6 @@ const Header = () => {
     const user = useSelector((state) => state?.user);
     const [openUserMenu, setOpenUserMenu] = useState(false);
 
-    console.log("user store", user);
-
     const redirectToLoginPage = () => {
         navigate("/login");
     };
@@ -78,7 +76,11 @@ const Header = () => {
                                     {openUserMenu && (
                                         <div className="absolute right-0 top-12">
                                             <div className="p-4 bg-white rounded lg:shadow-lg min-w-52">
-                                                <UserMenu />
+                                                <UserMenu
+                                                    close={() =>
+                                                        setOpenUserMenu(false)
+                                                    }
+                                                />
                                             </div>
                                         </div>
                                     )}

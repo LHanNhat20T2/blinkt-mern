@@ -6,6 +6,9 @@ import toast from "react-hot-toast";
 import Axios from "../utils/Axios";
 import SummaryApi from "../commom/SummaryApi";
 import AxiosToastError from "../utils/AxiosToastError.js";
+import fetchUserDetails from "../utils/FetchUserDetail.js";
+import { useDispatch } from "react-redux";
+import { setUserDetails } from "../store/userSlice.js";
 
 const Login = () => {
     const [data, setData] = useState({
@@ -14,6 +17,7 @@ const Login = () => {
     });
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -47,6 +51,9 @@ const Login = () => {
                     "refreshToken",
                     res.data.data.refreshToken
                 );
+
+                const userDetails = await fetchUserDetails();
+                dispatch(setUserDetails(userDetails.data));
                 setData({
                     email: "",
                     password: "",

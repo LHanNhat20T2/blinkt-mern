@@ -2,7 +2,7 @@ import "./App.css";
 import { Outlet } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import fetchUserDetails from "./utils/FetchUserDetail";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
