@@ -6,6 +6,7 @@ import AxiosToastError from "../utils/AxiosToastError";
 import SummaryApi from "../commom/SummaryApi";
 import toast from "react-hot-toast";
 import { logout } from "../store/userSlice";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 const UserMenu = () => {
     const user = useSelector((state) => state.user);
@@ -18,11 +19,14 @@ const UserMenu = () => {
             });
 
             if (response.data.success) {
-                close();
+                if (close) {
+                    close();
+                }
                 dispatch(logout());
                 localStorage.clear();
                 toast.success(response.data.message);
                 navigate("/");
+                window.history.back();
             }
         } catch (error) {
             console.log(error);
@@ -32,7 +36,17 @@ const UserMenu = () => {
     return (
         <>
             <div className="font-sem">My account</div>
-            <div className="text-sm">{user.name || user.mobile}</div>
+            <div className="flex items-center gap-2 text-sm">
+                <span className="m-w-52 text-ellipsis line-clamp-1 ">
+                    {user.name || user.mobile}
+                </span>
+                <Link
+                    to={"/dashboard/profile"}
+                    className="hover:text-primary-200"
+                >
+                    <FaExternalLinkAlt size={15} />
+                </Link>
+            </div>
 
             <Devider />
 

@@ -20,6 +20,14 @@ const Header = () => {
         navigate("/login");
     };
 
+    const handleMobile = () => {
+        if (!user._id) {
+            navigate("/login");
+            return;
+        }
+        navigate("/user");
+    };
+
     return (
         <header className="sticky top-0 flex flex-col justify-center h-24 gap-1 bg-white lg:h-20 lg:shadow-md">
             {!(isSearchPage && isMobile) && (
@@ -54,7 +62,10 @@ const Header = () => {
                     {/* Login and my cart */}
                     <div className="">
                         {/* user icons display in only mobile version */}
-                        <button className="text-neutral-600 lg:hidden">
+                        <button
+                            className="text-neutral-600 lg:hidden"
+                            onClick={handleMobile}
+                        >
                             <FaRegCircleUser />
                         </button>
                         <div className="items-center hidden gap-10 lg:flex">
