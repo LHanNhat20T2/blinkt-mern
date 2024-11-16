@@ -12,7 +12,7 @@ const Dashboard = () => {
                     </div>
 
                     {/* right for content */}
-                    <div className="bg-red-500">content dispaly</div>
+                    <div className="bg-red-500">content display</div>
                 </div>
             </div>
         </section>
