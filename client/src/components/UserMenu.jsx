@@ -51,10 +51,16 @@ const UserMenu = () => {
             <Devider />
 
             <div className="grid gap-3 text-sm">
-                <Link to={""} className="px-2 py-1 hover:bg-orange-200">
+                <Link
+                    to={"/dashboard/myorders"}
+                    className="px-2 py-1 hover:bg-orange-200"
+                >
                     My orders
                 </Link>
-                <Link to={""} className="px-2 py-1 hover:bg-orange-200">
+                <Link
+                    to={"/dashboard/address"}
+                    className="px-2 py-1 hover:bg-orange-200"
+                >
                     Save Address
                 </Link>
                 <button

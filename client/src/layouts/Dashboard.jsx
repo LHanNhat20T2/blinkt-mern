@@ -1,18 +1,19 @@
+import { Outlet } from "react-router-dom";
 import UserMenu from "../components/UserMenu";
 
 const Dashboard = () => {
     return (
         <section className="bg-white">
             <div className="container grid grid-cols-[250px,1fr] p-3 mx-auto">
-                <div>
-                    {/* left for menu */}
+                {/* left for menu */}
 
-                    <div>
-                        <UserMenu />
-                    </div>
+                <div className="sticky hidden py-4 overflow-y-hidden top-24 lg:block">
+                    <UserMenu />
+                </div>
 
-                    {/* right for content */}
-                    <div className="bg-red-500">content display</div>
+                {/* right for content */}
+                <div className="p-4 bg-white">
+                    <Outlet />
                 </div>
             </div>
         </section>
