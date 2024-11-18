@@ -33,6 +33,12 @@ const UserMenu = () => {
             AxiosToastError(error);
         }
     };
+
+    const handleClose = () => {
+        if (close) {
+            close();
+        }
+    };
     return (
         <>
             <div className="font-sem">My account</div>
@@ -41,6 +47,7 @@ const UserMenu = () => {
                     {user.name || user.mobile}
                 </span>
                 <Link
+                    onClick={handleClose}
                     to={"/dashboard/profile"}
                     className="hover:text-primary-200"
                 >
@@ -52,12 +59,14 @@ const UserMenu = () => {
 
             <div className="grid gap-3 text-sm">
                 <Link
+                    onClick={handleClose}
                     to={"/dashboard/myorders"}
                     className="px-2 py-1 hover:bg-orange-200"
                 >
                     My orders
                 </Link>
                 <Link
+                    onClick={handleClose}
                     to={"/dashboard/address"}
                     className="px-2 py-1 hover:bg-orange-200"
                 >

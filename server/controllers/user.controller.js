@@ -203,24 +203,28 @@ export async function logoutController(req, res) {
 }
 
 //upload user avatar
-export async function uploadAvatar(req, res) {
+export async function uploadAvatar(request, response) {
     try {
-        const userId = req.userId; // auth middleware
-        const image = req.file; //multer middleware
+        const userId = request.userId; // auth middlware
+        const image = request.file; // multer middleware
+
         const upload = await uploadImageCloudinary(image);
 
         const updateUser = await UserModel.findByIdAndUpdate(userId, {
             avatar: upload.url,
         });
-        return res.json({
+
+        return response.json({
             message: "upload profile",
+            success: true,
+            error: false,
             data: {
                 _id: userId,
                 avatar: upload.url,
             },
         });
     } catch (error) {
-        return res.status(500).json({
+        return response.status(500).json({
             message: error.message || error,
             error: true,
             success: false,
@@ -250,7 +254,7 @@ export async function updateDetails(req, res) {
         );
 
         return res.json({
-            message: "update user successfully",
+            message: "Update successfully",
             error: false,
             success: true,
             data: updateUser,

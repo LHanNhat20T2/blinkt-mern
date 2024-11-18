@@ -37,5 +37,9 @@ const SummaryApi = {
         url: "api/user/upload-avatar",
         method: "put",
     },
+    updateUserDetails: {
+        url: "/api/user/update-user",
+        method: "put",
+    },
 };
 export default SummaryApi;
