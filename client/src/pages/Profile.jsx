@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Axios from "../utils/Axios";
 import SummaryApi from "../commom/SummaryApi.js";
 import toast from "react-hot-toast";
-import fetchUserDetails from "./utils/FetchUserDetail";
+import fetchUserDetails from "../utils/FetchUserDetail";
 import { setUserDetails } from "../store/userSlice";
 const Profile = () => {
     const user = useSelector((state) => state.user);
@@ -63,7 +63,7 @@ const Profile = () => {
                     <img
                         src={user.avatar}
                         alt={user.name}
-                        className="w-full h-full"
+                        className="w-full h-full rounded-full"
                     />
                 ) : (
                     <FaRegUserCircle size={60} />
