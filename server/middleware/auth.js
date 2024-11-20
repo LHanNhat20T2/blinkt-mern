@@ -17,7 +17,7 @@ const auth = async (req, res, next) => {
             token,
             process.env.SECRET_KEY_ACCESS_TOKEN
         );
-        console.log("decode", decode);
+        // console.log("decode", decode);
 
         if (!decode) {
             return res.status(401).json({
