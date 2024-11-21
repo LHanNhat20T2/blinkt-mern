@@ -49,5 +49,9 @@ const SummaryApi = {
         url: "/api/file/upload",
         method: "post",
     },
+    getCategory: {
+        url: "/api/user/get",
+        method: "get",
+    },
 };
 export default SummaryApi;
