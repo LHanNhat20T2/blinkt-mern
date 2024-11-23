@@ -4,10 +4,10 @@ import UserMenu from "../components/UserMenu";
 const Dashboard = () => {
     return (
         <section className="bg-white">
-            <div className="container grid grid-cols-[250px,1fr] p-3 mx-auto">
+            <div className="container mx-auto p-3 grid lg:grid-cols-[250px,1fr]">
                 {/* left for menu */}
 
-                <div className="sticky hidden py-4 overflow-y-hidden border-r top-24 lg:block">
+                <div className="sticky max-h-[calc(100vh-96x)] hidden py-4 overflow-y-hidden border-r top-24 lg:block">
                     <UserMenu />
                 </div>
 

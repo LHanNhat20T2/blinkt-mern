@@ -50,8 +50,12 @@ const SummaryApi = {
         method: "post",
     },
     getCategory: {
-        url: "/api/user/get",
+        url: "/api/category/get",
         method: "get",
+    },
+    updateCategory: {
+        url: "/api/category/update",
+        method: "put",
     },
 };
 export default SummaryApi;

@@ -6,10 +6,11 @@ import SummaryApi from "../commom/SummaryApi.js";
 import toast from "react-hot-toast";
 import AxiosToastError from "../utils/AxiosToastError.js";
 import Axios from "../utils/Axios.js";
-const UploadCategoryModel = ({ close, fetchData }) => {
+const EditCategory = ({ close, fetchData, data: CategoryData }) => {
     const [data, setData] = useState({
-        name: "",
-        image: "",
+        _id: CategoryData._id,
+        name: CategoryData.name,
+        image: CategoryData.image,
     });
     const [loading, setLoading] = useState(false);
 
@@ -28,7 +29,7 @@ const UploadCategoryModel = ({ close, fetchData }) => {
         try {
             setLoading(true);
             const response = await Axios({
-                ...SummaryApi.addCategory,
+                ...SummaryApi.updateCategory,
                 data: data,
             });
 
@@ -51,10 +52,11 @@ const UploadCategoryModel = ({ close, fetchData }) => {
         if (!file) {
             return;
         }
-
+        setLoading(true);
         const response = await uploadImage(file);
         console.log(response);
         const { data: ImageResponse } = response;
+        setLoading(false);
         setData((preve) => {
             return {
                 ...preve,
@@ -66,7 +68,7 @@ const UploadCategoryModel = ({ close, fetchData }) => {
         <section className="fixed inset-0 flex items-center justify-center p-4 bg-neutral-800 bg-opacity-60">
             <div className="w-full max-w-4xl p-4 bg-white rounded">
                 <div className="flex items-center justify-center">
-                    <h1 className="font-semibold">Category</h1>
+                    <h1 className="font-semibold">Update Category</h1>
                     <button onClick={close} className="block ml-auto w-fit">
                         <IoClose size={25} />
                     </button>
@@ -111,7 +113,9 @@ const UploadCategoryModel = ({ close, fetchData }) => {
                                                 : "border-primary-200 hover:bg-primary-100"
                                         } px-4 py-2 rounded border cursor-pointer font-medium`}
                                     >
-                                        Upload Image
+                                        {loading
+                                            ? "Loading..."
+                                            : "Upload Image"}
                                     </div>
                                     <input
                                         disabled={!data.name}
@@ -134,11 +138,11 @@ const UploadCategoryModel = ({ close, fetchData }) => {
                     font-semibold 
                     `}
                     >
-                        Add Category
+                        Update Category
                     </button>
                 </form>
             </div>
         </section>
     );
 };
-export default UploadCategoryModel;
+export default EditCategory;
