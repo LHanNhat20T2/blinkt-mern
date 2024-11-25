@@ -2,6 +2,10 @@ import { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import uploadImage from "../utils/UploadImage";
 import { useSelector } from "react-redux";
+import Axios from "../utils/Axios";
+import AxiosToastError from "../utils/AxiosToastError";
+import SummaryApi from "../commom/SummaryApi";
+import toast from "react-hot-toast";
 
 const UploadSubCategoryModel = ({ close }) => {
     const [subCategoryData, setSubCategoryData] = useState({
@@ -52,6 +56,22 @@ const UploadSubCategoryModel = ({ close }) => {
 
     const handleSubmitSubCategory = async (e) => {
         e.preventDefault();
+        try {
+            const response = await Axios({
+                ...SummaryApi.createSubCategory,
+                data: subCategoryData,
+            });
+
+            const { data: responseData } = response;
+            if (responseData.success) {
+                toast.success(responseData.message);
+                if (close) {
+                    close();
+                }
+            }
+        } catch (error) {
+            AxiosToastError(error);
+        }
     };
     return (
         <section className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-800 opacity-70">
