@@ -7,6 +7,7 @@ import SummaryApi from "../commom/SummaryApi";
 import toast from "react-hot-toast";
 import { logout } from "../store/userSlice";
 import { FaExternalLinkAlt } from "react-icons/fa";
+import isAdmin from "../utils/isAdmin";
 
 const UserMenu = () => {
     const user = useSelector((state) => state.user);
@@ -44,7 +45,10 @@ const UserMenu = () => {
             <div className="font-sem">My account</div>
             <div className="flex items-center gap-2 text-sm">
                 <span className="m-w-52 text-ellipsis line-clamp-1 ">
-                    {user.name || user.mobile}
+                    {user.name || user.mobile}{" "}
+                    <span className="text-medium">
+                        {user.role === "ADMIN" ? "(Admin)" : ""}
+                    </span>
                 </span>
                 <Link
                     onClick={handleClose}
@@ -58,34 +62,42 @@ const UserMenu = () => {
             <Devider />
 
             <div className="grid gap-3 text-sm">
-                <Link
-                    onClick={handleClose}
-                    to={"/dashboard/category"}
-                    className="px-2 py-1 hover:bg-orange-200"
-                >
-                    Category
-                </Link>
-                <Link
-                    onClick={handleClose}
-                    to={"/dashboard/subcategory"}
-                    className="px-2 py-1 hover:bg-orange-200"
-                >
-                    Sub category
-                </Link>
-                <Link
-                    onClick={handleClose}
-                    to={"/dashboard/upload-product"}
-                    className="px-2 py-1 hover:bg-orange-200"
-                >
-                    Upload Product
-                </Link>
-                <Link
-                    onClick={handleClose}
-                    to={"/dashboard/product"}
-                    className="px-2 py-1 hover:bg-orange-200"
-                >
-                    Product
-                </Link>
+                {isAdmin(user.role) && (
+                    <Link
+                        onClick={handleClose}
+                        to={"/dashboard/category"}
+                        className="px-2 py-1 hover:bg-orange-200"
+                    >
+                        Category
+                    </Link>
+                )}
+                {isAdmin(user.role) && (
+                    <Link
+                        onClick={handleClose}
+                        to={"/dashboard/subcategory"}
+                        className="px-2 py-1 hover:bg-orange-200"
+                    >
+                        Sub category
+                    </Link>
+                )}
+                {isAdmin(user.role) && (
+                    <Link
+                        onClick={handleClose}
+                        to={"/dashboard/upload-product"}
+                        className="px-2 py-1 hover:bg-orange-200"
+                    >
+                        Upload Product
+                    </Link>
+                )}
+                {isAdmin(user.role) && (
+                    <Link
+                        onClick={handleClose}
+                        to={"/dashboard/product"}
+                        className="px-2 py-1 hover:bg-orange-200"
+                    >
+                        Product
+                    </Link>
+                )}
                 <Link
                     onClick={handleClose}
                     to={"/dashboard/myorders"}

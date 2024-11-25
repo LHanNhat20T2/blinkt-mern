@@ -73,7 +73,7 @@ const Register = () => {
                     onSubmit={handleSubmit}
                     className="grid gap-4 mt-4"
                 >
-                    <div className="grid gap-2 mt-6">
+                    <div className="grid gap-2">
                         <label htmlFor="name">Name : </label>
                         <input
                             type="text"
@@ -86,7 +86,7 @@ const Register = () => {
                             placeholder="Enter your name"
                         />
                     </div>
-                    <div className="grid gap-2 mt-6">
+                    <div className="grid gap-2">
                         <label htmlFor="email">Email : </label>
                         <input
                             type="text"
@@ -99,7 +99,7 @@ const Register = () => {
                             placeholder="Enter your email"
                         />
                     </div>
-                    <div className="grid gap-2 mt-6">
+                    <div className="grid gap-2">
                         <label htmlFor="password">Password : </label>
                         <div className="flex items-center p-2 border rounded bg-blue-50 focus-within:border-primary-200">
                             <input
@@ -124,7 +124,7 @@ const Register = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="grid gap-2 mt-6">
+                    <div className="grid gap-2">
                         <label htmlFor="password">Confirm Password : </label>
                         <div className="flex items-center p-2 border rounded bg-blue-50 focus-within:border-primary-200">
                             <input

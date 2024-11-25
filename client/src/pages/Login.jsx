@@ -74,7 +74,7 @@ const Login = () => {
                     onSubmit={handleSubmit}
                     className="grid gap-4 py-4 "
                 >
-                    <div className="grid gap-2 mt-6">
+                    <div className="grid gap-2 ">
                         <label htmlFor="email">Email : </label>
                         <input
                             type="text"
@@ -87,7 +87,7 @@ const Login = () => {
                             placeholder="Enter your email"
                         />
                     </div>
-                    <div className="grid gap-2 mt-6">
+                    <div className="grid gap-2 ">
                         <label htmlFor="password">Password : </label>
                         <div className="flex items-center p-2 border rounded bg-blue-50 focus-within:border-primary-200">
                             <input
