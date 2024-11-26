@@ -8,6 +8,9 @@ import ViewImage from "../components/ViewImage";
 import { createColumnHelper } from "@tanstack/react-table";
 import { BiSolidPencil } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
+import EditSubCategory from "../components/EditSubCategory";
+import ConfirmBox from "../components/ConfirmBox";
+import toast from "react-hot-toast";
 
 const SubCategoryPage = () => {
     const [openAddSubCategory, setOpenAddSubCategory] = useState(false);
@@ -15,6 +18,15 @@ const SubCategoryPage = () => {
     const [loading, setLoading] = useState(false);
     const columnHelper = createColumnHelper();
     const [ImageURL, setImageURL] = useState("");
+    const [openEdit, setOpenEdit] = useState(false);
+    const [editData, setEditData] = useState({
+        _id: "",
+    });
+    const [deleteSubCategory, setDeleteSubCategory] = useState({
+        _id: "",
+    });
+
+    const [openDeleteConfirmBox, setOpenDeleteConfirmBox] = useState(false);
 
     const fetchSubCategory = async () => {
         try {
@@ -28,7 +40,7 @@ const SubCategoryPage = () => {
                 setData(responseData.data);
             }
         } catch (error) {
-            AxiosToastError;
+            AxiosToastError(error);
         } finally {
             setLoading(false);
         }
@@ -37,6 +49,25 @@ const SubCategoryPage = () => {
     useEffect(() => {
         fetchSubCategory();
     }, []);
+
+    const handleDeleteCategory = async () => {
+        try {
+            const response = await Axios({
+                ...SummaryApi.deleteSubCategory,
+                data: deleteSubCategory,
+            });
+
+            const { data: responseData } = response;
+            if (responseData.success) {
+                toast.success(responseData.message);
+                fetchSubCategory();
+                setOpenDeleteConfirmBox(false);
+                setDeleteSubCategory({ _id: "" });
+            }
+        } catch (error) {
+            AxiosToastError(error);
+        }
+    };
 
     const column = [
         columnHelper.accessor("name", {
@@ -82,10 +113,22 @@ const SubCategoryPage = () => {
             cell: ({ row }) => {
                 return (
                     <div className="flex items-center justify-center gap-3">
-                        <button className="p-2 bg-green-100 rounded hover:text-green-600">
+                        <button
+                            onClick={() => {
+                                setOpenEdit(true);
+                                setEditData(row.original);
+                            }}
+                            className="p-2 bg-green-100 rounded hover:text-green-600"
+                        >
                             <BiSolidPencil size={20} />
                         </button>
-                        <button className="p-2 text-red-500 bg-red-100 rounded hover:text-red-600 ">
+                        <button
+                            onClick={() => {
+                                setOpenDeleteConfirmBox(true);
+                                setDeleteSubCategory(row.original);
+                            }}
+                            className="p-2 text-red-500 bg-red-100 rounded hover:text-red-600 "
+                        >
                             <MdDelete size={20} />
                         </button>
                     </div>
@@ -111,10 +154,25 @@ const SubCategoryPage = () => {
             {openAddSubCategory && (
                 <UploadSubCategoryModel
                     close={() => setOpenAddSubCategory(false)}
+                    fetchData={fetchSubCategory}
                 />
             )}
             {ImageURL && (
                 <ViewImage url={ImageURL} close={() => setImageURL("")} />
+            )}
+            {openEdit && (
+                <EditSubCategory
+                    data={editData}
+                    close={() => setOpenEdit(false)}
+                    fetchData={fetchSubCategory}
+                />
+            )}
+            {openDeleteConfirmBox && (
+                <ConfirmBox
+                    cancel={() => setOpenDeleteConfirmBox(false)}
+                    close={() => setOpenDeleteConfirmBox(false)}
+                    confirm={handleDeleteCategory}
+                />
             )}
         </section>
     );

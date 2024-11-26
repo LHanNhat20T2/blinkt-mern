@@ -7,11 +7,12 @@ import AxiosToastError from "../utils/AxiosToastError";
 import SummaryApi from "../commom/SummaryApi";
 import toast from "react-hot-toast";
 
-const UploadSubCategoryModel = ({ close, fetchData }) => {
+const EditSubCategory = ({ close, data, fetchData }) => {
     const [subCategoryData, setSubCategoryData] = useState({
-        name: "",
-        image: "",
-        category: [],
+        _id: data._id,
+        name: data.name,
+        image: data.image,
+        category: data.category || [],
     });
     const allCategory = useSelector((state) => state.product.allCategory);
 
@@ -58,7 +59,7 @@ const UploadSubCategoryModel = ({ close, fetchData }) => {
         e.preventDefault();
         try {
             const response = await Axios({
-                ...SummaryApi.createSubCategory,
+                ...SummaryApi.updateSubCategory,
                 data: subCategoryData,
             });
 
@@ -68,7 +69,9 @@ const UploadSubCategoryModel = ({ close, fetchData }) => {
                 if (close) {
                     close();
                 }
-                fetchData();
+                if (fetchData) {
+                    fetchData();
+                }
             }
         } catch (error) {
             AxiosToastError(error);
@@ -78,7 +81,7 @@ const UploadSubCategoryModel = ({ close, fetchData }) => {
         <section className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-800 bg-opacity-70">
             <div className="w-full max-w-5xl p-4 bg-white rounded">
                 <div className="flex items-center justify-between gap-3">
-                    <h1 className="font-semibold">Add sub Category</h1>
+                    <h1 className="font-semibold">Edit sub Category</h1>
                     <button onClick={close}>
                         <IoClose size={25} />
                     </button>
@@ -132,7 +135,7 @@ const UploadSubCategoryModel = ({ close, fetchData }) => {
                         <div className="border rounded focus-within:border-primary-200">
                             {/* display value */}
                             <div className="flex gap-2 flex-wap">
-                                {subCategoryData.category.map((cat) => {
+                                {subCategoryData.category.map((cat, index) => {
                                     return (
                                         <p
                                             key={cat._id + "selectedValue"}
@@ -204,4 +207,4 @@ const UploadSubCategoryModel = ({ close, fetchData }) => {
         </section>
     );
 };
-export default UploadSubCategoryModel;
+export default EditSubCategory;

@@ -63,7 +63,7 @@ const UploadCategoryModel = ({ close, fetchData }) => {
         });
     };
     return (
-        <section className="fixed inset-0 flex items-center justify-center p-4 bg-neutral-800 bg-opacity-60">
+        <section className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-800 bg-opacity-60">
             <div className="w-full max-w-4xl p-4 bg-white rounded">
                 <div className="flex items-center justify-center">
                     <h1 className="font-semibold">Category</h1>

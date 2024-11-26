@@ -28,23 +28,23 @@ const CategoryPage = () => {
     useEffect(() => {
         setCategoryData(allCategory);
     }, [allCategory]);
-    // const fetchCategory = async () => {
-    //     try {
-    //         setLoading(true);
-    //         const response = await Axios({
-    //             ...SummaryApi.getCategory,
-    //         });
-    //         const { data: responseData } = response;
-    //         console.log(responseData);
-    //         if (responseData.success) {
-    //             setCategoryData(responseData.data);
-    //         }
-    //     } catch (error) {
-    //         AxiosToastError(error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
+    const fetchCategory = async () => {
+        try {
+            setLoading(true);
+            const response = await Axios({
+                ...SummaryApi.getCategory,
+            });
+            const { data: responseData } = response;
+            console.log(responseData);
+            if (responseData.success) {
+                setCategoryData(responseData.data);
+            }
+        } catch (error) {
+            AxiosToastError(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleDeleteCategory = async () => {
         try {
