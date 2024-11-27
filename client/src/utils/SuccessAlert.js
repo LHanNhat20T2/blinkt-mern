@@ -4,6 +4,7 @@ const successAlert = (title) => {
         icon: "success",
         title: title,
         color: "#fff",
+        confirmButtonColor: "##00b050",
     });
     return alert;
 };
