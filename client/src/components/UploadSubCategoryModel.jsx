@@ -172,6 +172,7 @@ const UploadSubCategoryModel = ({ close, fetchData }) => {
                                     });
                                 }}
                             >
+                                <option value="">Select Category</option>
                                 {allCategory.map((category) => (
                                     <option
                                         value={category?._id}

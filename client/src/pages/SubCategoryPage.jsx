@@ -144,11 +144,11 @@ const SubCategoryPage = () => {
                     onClick={() => setOpenAddSubCategory(true)}
                     className="px-3 py-1 text-sm border rounded border-primary-200 hover:bg-primary-200"
                 >
-                    Add Category
+                    Add Sub Category
                 </button>
             </div>
             DisplayTable
-            <div>
+            <div className="overflow-auto w-full max-w-[95vw]">
                 <DisplayTable data={data} column={column} />
             </div>
             {openAddSubCategory && (

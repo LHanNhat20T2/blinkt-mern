@@ -9,6 +9,7 @@ import userRouter from "./routes/user.route.js";
 import categoryRouter from "./routes/category.route.js";
 import uploadRouter from "./routes/upload.route.js";
 import subCategory from "./routes/subCategory.route.js";
+import productRouter from "./routes/product.route.js";
 
 dotenv.config();
 const app = express();
@@ -41,6 +42,7 @@ app.use("/api/user", userRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/file", uploadRouter);
 app.use("/api/subcategory", subCategory);
+app.use("/api/product", productRouter);
 
 connectDB().then(() => {
     app.listen(PORT, () => {
