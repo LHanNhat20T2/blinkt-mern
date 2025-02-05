@@ -10,7 +10,7 @@ const AddFieldComponent = ({ close, value, onChange, submit }) => {
                     </button>
                 </div>
                 <input
-                    placeholder="Enter field name"
+                    placeholder="Enter field namessasdasdasd"
                     className="w-full p-2 my-3 border rounded outline-none bg-blue-50 focus-within:border-primary-100"
                     value={value}
                     onChange={onChange}
