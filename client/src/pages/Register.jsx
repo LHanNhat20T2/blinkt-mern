@@ -33,7 +33,9 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (data.password !== data.confirmPassword) {
-            toast.error("password and confirm password must be same");
+            toast.error(
+                "password and confirm password must be a  zzzz samessss"
+            );
             return;
         }
 
