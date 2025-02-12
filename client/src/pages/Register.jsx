@@ -33,9 +33,7 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (data.password !== data.confirmPassword) {
-            toast.error(
-                "password and confirm password must be a  zzzz samessss"
-            );
+            toast.error("Mật khẩu không trùng khớp!");
             return;
         }
 
